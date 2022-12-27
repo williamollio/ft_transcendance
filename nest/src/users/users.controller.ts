@@ -80,7 +80,15 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(+id, updateUserDto);
+    try {
+      return await this.usersService.update(+id, updateUserDto);
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'This user cant be updated',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @Delete(':id')
