@@ -4,15 +4,25 @@ import Button from "@mui/material/Button";
 import { Box } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import { RoutePath } from "../interfaces/router.interface";
+import AuthService from "../service/auth.service";
 
 export default function LoginView(): React.ReactElement {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // send request to BE
-    navigate(RoutePath.PROFILE);
-  };
+  async function handleLogin() {
+    let response = await AuthService.getAuthURI(); // Will be changed later on.
+    if (!response?.error) {
+      if (response.data) {
+        navigate(RoutePath.LOGIN_2FA);
+      } else {
+        navigate(RoutePath.PROFILE);
+      }
+    } else {
+      console.error("Could not authenticate!");
+    }
+  }
+
   return (
     <Box className={classes.containerLogin}>
       <Button
